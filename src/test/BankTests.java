@@ -1,5 +1,6 @@
 package src.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -9,6 +10,7 @@ public class BankTests {
 
   @Test
   public void checkingCloneTest() {
-    assertNotEquals(expected, actual);
+    // assertNotEquals(expected, actual);
+    assertTrue(false);
   }
 }

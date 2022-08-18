@@ -23,9 +23,12 @@ public abstract class Account {
     this.balance = source.balance;
   }
 
+  // Abstract Methods
   public abstract void deposit(double amount);
 
   public abstract void withdrawal(double amount);
+
+  public abstract Account clone();
 
   public String getId() {
     return this.id;

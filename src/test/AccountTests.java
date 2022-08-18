@@ -1,6 +1,5 @@
 package src.test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Before;
@@ -10,8 +9,9 @@ import src.main.model.account.Account;
 import src.main.model.account.Checking;
 import src.main.model.account.Loan;
 import src.main.model.account.Savings;
+import src.main.model.account.interfaces.Taxable;;;
 
-public class AccountTest2 {
+public class AccountTests {
 
   Account[] accounts;
 
@@ -34,12 +34,13 @@ public class AccountTest2 {
 
   // Test if deposit amounts in excess of $3000.00 are taxed at 15% (checking)
   @Test
-  public void depositGreaterThan3000CheckingTest() {
-    double taxRate = 0.02;
+  public void taxIncomeCheckingTest() {
+    double taxRate = 0.15;
     double initialBalance = accounts[0].getBalance();
     double amount = 10000;
     double taxes = (10000 - 3000) * taxRate;
     accounts[0].deposit(amount);
+    ((Taxable) accounts[0]).tax(amount);
     assertTrue((initialBalance + amount - taxes) == accounts[0].getBalance());
   }
 

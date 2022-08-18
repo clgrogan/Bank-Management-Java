@@ -1,7 +1,10 @@
 package src.main;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import src.main.model.Bank;
+import src.main.model.Transaction;
 import src.main.model.account.Account;
 import src.main.model.account.Checking;
 import src.main.model.account.Loan;
@@ -13,13 +16,52 @@ public class Main {
     static String TRANSACTIONS_FILE = "src/main/data/transactions.txt";
 
     public static void main(String[] args) {
+        mainAccount();
+        mainBank();
+
+    }
+
+    private static void mainBank() {
+        Bank bank = new Bank();
         Account[] accounts = new Account[] {
                 new Checking("f84c43f4-a634-4c57-a644-7602f8840870", "Michael Scott", 1524.51),
-                new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman", 2241.60),
-                new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "Phoebe Buffay", 2537.31) };
-        double withdrawalRate = 0.02;
-        double initialBalance = accounts[2].getBalance();
-        double amount = 1000;
+                new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman", 2241.60)
+        };
+
+        for (Account account : accounts) {
+            bank.addAccount(account);
+        }
+
+        Transaction[] transactions = new Transaction[] {
+                new Transaction(Transaction.Type.WITHDRAW, 1546905600, "f84c43f4-a634-4c57-a644-7602f8840870", 624.99),
+                new Transaction(Transaction.Type.DEPOSIT, 1578700800, "f84c43f4-a634-4c57-a644-7602f8840870", 441.93),
+                new Transaction(Transaction.Type.WITHDRAW, 1547078400, "f84c43f4-a634-4c57-a644-7602f8840870", 546.72),
+                new Transaction(Transaction.Type.WITHDRAW, 1546732800, "f84c43f4-a634-4c57-a644-7602f8840870", 546.72),
+                new Transaction(Transaction.Type.DEPOSIT, 1578355200, "f84c43f4-a634-4c57-a644-7602f8840870", 635.95),
+                new Transaction(Transaction.Type.WITHDRAW, 1547078400, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 875.64),
+                new Transaction(Transaction.Type.WITHDRAW, 1578614400, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 912.45),
+                new Transaction(Transaction.Type.WITHDRAW, 1577836800, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 695.09),
+                new Transaction(Transaction.Type.WITHDRAW, 1609459200, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 917.21),
+                new Transaction(Transaction.Type.WITHDRAW, 1578096000, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 127.94),
+                new Transaction(Transaction.Type.WITHDRAW, 1546819200, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 612.52)
+        };
+
+        // for (Transaction transaction : transactions) {
+        // bank.addTransaction(transaction);
+        // }
+
+        Transaction[] filteredTransactions = bank.getTransactions("f84c43f4-a634-4c57-a644-7602f8840870");
+
+        for (int i = 0; i < filteredTransactions.length; i++) {
+            System.out.println(filteredTransactions[i]);
+        }
+        System.out.println();
+        Account account = bank.getAccount("ce07d7b3-9038-43db-83ae-77fd9c0450c9");
+        System.out.println(account);
+        System.out.println();
+    }
+
+    private static void mainAccount() {
 
         Checking checking = new Checking(
                 "f84c43f4-a634-4c57-a644-7602f8840870",
@@ -29,16 +71,16 @@ public class Main {
         Loan loan = new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "Mike Myers", 2537.31);
 
         System.out.println();
+        Account checkingClone = checking.clone();
+        Account savingsClone = savings.clone();
+        Account loanClone = loan.clone();
 
-        System.out.println(checking);
-        System.out.println(loan);
-        System.out.println(savings);
-        accounts[2].withdrawal(amount);
-        System.out.println("\ninitialBalance: " + initialBalance
-                + "\n(initialBalance + amount * (1 + withdrawalRate)): "
-                + (initialBalance + amount * (1 + withdrawalRate))
-                + "\namount * (1 + withdrawalRate): " + amount * (1 + withdrawalRate)
-                + "\naccounts[2].getBalance(): " + accounts[2].getBalance());
+        System.out.println("checking: " + checking);
+        System.out.println("checkingClone: " + checkingClone);
+        System.out.println("loan: " + loan);
+        System.out.println("loanClone: " + loanClone);
+        System.out.println("savings: " + savings);
+        System.out.println("savingsClone: " + savingsClone);
 
         System.out.println();
     }
