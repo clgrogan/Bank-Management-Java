@@ -22,11 +22,6 @@ public class Checking extends Account implements Taxable {
     return new Checking(this);
   }
 
-  public void test(double amount) {
-    System.out.println("Method: " + Thread.currentThread().getStackTrace()[1].getMethodName());
-    System.out.println("\tParameter(s):\n\t\tamount: $" + amount);
-  }
-
   @Override
   public void deposit(double amount) {
     this.setBalance(this.balance += amount);

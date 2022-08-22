@@ -1,5 +1,6 @@
 package src.test;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Before;
@@ -126,6 +127,13 @@ public class AccountTests {
     double amount = initialBalance + 200;
     accounts[0].withdrawal(amount);
     assertTrue(initialBalance == accounts[0].getBalance());
+  }
+
+  @Test
+  public void cloneAccountTest() {
+
+    Account clonedAccount = accounts[0].clone();
+    assertNotEquals(accounts[0], clonedAccount);
   }
 
 }

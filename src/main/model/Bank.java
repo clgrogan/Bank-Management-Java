@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import src.main.model.account.Account;
 
 public class Bank {
-  ArrayList<Account> accounts;
-  ArrayList<Transaction> transactions;
+  private ArrayList<Account> accounts;
+  private ArrayList<Transaction> transactions;
 
   public Bank() {
     accounts = new ArrayList<Account>();
@@ -30,8 +30,6 @@ public class Bank {
    * Name: addTransaction
    * 
    * @param transaction
-   * 
-   *                    Inside the function:
    *                    1. adds a new transaction object to the array list.
    */
   private void addTransaction(Transaction transaction) {
@@ -53,6 +51,13 @@ public class Bank {
         .toArray(Transaction[]::new);
   }
 
+  public Transaction[] getTransactions() {
+    return transactions.stream()
+        .collect(Collectors.toList())
+        .toArray(Transaction[]::new);
+
+  }
+
   /**
    * Name: getAccount()
    * 
@@ -65,5 +70,33 @@ public class Bank {
     return accounts.stream()
         .filter(e -> e.getId().equals(id))
         .findFirst().orElse(null);
+  }
+
+  /**
+   * Name: executeTransaction
+   * 
+   * @param transaction
+   * 
+   *                    Inside the function:
+   *                    1. calls withdrawTransaction if transaction type is
+   *                    WITHDRAW
+   *                    2. calls depositTransaction if transaction type is DEPOSIT
+   * 
+   */
+  public void executeTransaction(Transaction transaction) {
+    Account account = this.getAccount(transaction.id);
+    double initialBalance = account.getBalance();
+
+    if (transaction.getType().toString() == "DEPOSIT")
+      account.deposit(transaction.amount);
+    else
+      account.withdrawal(transaction.amount);
+
+    if (initialBalance != account.getBalance())
+      this.addTransaction(transaction);
+  }
+
+  public void deductTaxes() {
+
   }
 }
