@@ -14,7 +14,7 @@ public class Savings extends Account {
 
   @Override
   public Account clone() {
-    return new Checking(this);
+    return new Savings(this);
   }
 
   @Override

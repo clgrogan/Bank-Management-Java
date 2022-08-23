@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import src.main.model.account.Account;
 
 public class Bank {
-  private ArrayList<Account> accounts;
+  public ArrayList<Account> accounts;
   private ArrayList<Transaction> transactions;
 
   public Bank() {
