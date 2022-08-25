@@ -3,9 +3,11 @@ package src.main;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 import src.main.model.Bank;
+import src.main.model.Transaction;
 import src.main.model.account.Account;
 import src.main.model.account.Checking;
 import src.main.model.account.Loan;
@@ -19,31 +21,27 @@ public class MainFinal {
 
     public static void main(String[] args) {
         ArrayList<Account> accounts = null;
-
-        System.out.println();
+        ArrayList<Transaction> transactions = null;
 
         try {
             accounts = returnAccounts();
+            loadAccounts(accounts);
+            transactions = returnTransactions();
+            runTransactions(transactions);
         } catch (FileNotFoundException e) {
+            System.out.println("The wheels fell off: " + e.getMessage());
             e.printStackTrace();
         }
 
-        System.out.println("\nReturned Accounts");
-        for (Account account : accounts) {
-            System.out.println("\t" + account);
-        }
-
-        loadAccounts(accounts);
-
-        System.out.println("\nBank Accounts");
         for (Account account : bigBank.accounts) {
-            System.out.println("\t" + account);
+            System.out.println("\n\t\t\t\t\t ACCOUNT\n\n\t" + account + "\n\n");
+            transactionHistory(account.getId());
         }
 
     }
 
     /**
-     * Name: createObject
+     * Name: createAccount
      * 
      * @param values (String[] values)
      * @return Account
@@ -111,6 +109,11 @@ public class MainFinal {
         });
     }
 
+    public static Transaction createTransaction(String[] values) {
+        return new Transaction(Transaction.Type.valueOf(values[1]), Long.parseLong(values[0]), values[2],
+                Double.parseDouble(values[3]));
+    }
+
     /**
      * Name: returnTransactions()
      * 
@@ -125,5 +128,54 @@ public class MainFinal {
      *                               3. Sorts the ArrayList.
      */
 
-    // "Bank Management 8: Task 5"
+    public static ArrayList<Transaction> returnTransactions() throws FileNotFoundException {
+
+        ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+
+        FileInputStream fis = new FileInputStream(TRANSACTIONS_FILE);
+        Scanner scan = new Scanner(fis);
+
+        while (scan.hasNextLine()) {
+            transactions.add(createTransaction(scan.nextLine().split(",")));
+        }
+        scan.close();
+        Collections.sort(transactions);
+        return transactions;
+    }
+
+    /**
+     * Name: runTransactions
+     * 
+     * @param transactions ArrayList<Transaction>
+     * 
+     *                     Inside the function:
+     *                     1. Executes every transaction using bank.execute.
+     */
+    public static void runTransactions(ArrayList<Transaction> transactions) {
+        transactions.stream()
+                .forEach((transaction) -> bigBank.executeTransaction(transaction));
+    }
+
+    /**
+     * Name: transactionHistory
+     * 
+     * @param accountId (String)
+     *                  <p>
+     *                  Inside the function<br>
+     *                  1. Print: "\t\t\t\t TRANSACTION HISTORY\n\t"<br>
+     *                  2. Print every transaction that corresponds to the id.<br>
+     *                  (Waits x milliseconds between lines)
+     *                  - Use this format "\t"+transaction+"\n"<br>
+     *                  3. Print: "\n\t\t\t\t\tAFTER TAX\n"<br>
+     *                  4. Print: "\t" + account that corresponds to id
+     *                  +"\n\n\n\n"
+     */
+    public static void transactionHistory(String accountId) {
+        Transaction[] accountTransactions = bigBank.getTransactions(accountId);
+        System.out.println("\t\t\t\t   TRANSACTION HISTORY\n\t");
+        for (Transaction transaction : accountTransactions) {
+            System.out.println("\t " + transaction);
+            Main.wait(15);
+        }
+    }
 }

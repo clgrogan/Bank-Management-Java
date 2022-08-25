@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
   public enum Type {
     WITHDRAW, DEPOSIT
   };
@@ -109,5 +109,10 @@ public class Transaction {
         "\t" + returnDate() + "" +
         "\t" + id + "" +
         "\t$" + amount + "";
+  }
+
+  @Override
+  public int compareTo(Transaction specifiedTransaction) {
+    return Long.compare(this.getTimestamp(), specifiedTransaction.getTimestamp());
   }
 }
