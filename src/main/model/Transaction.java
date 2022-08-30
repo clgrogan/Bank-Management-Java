@@ -1,5 +1,6 @@
 package src.main.model;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -12,11 +13,11 @@ public class Transaction implements Comparable<Transaction> {
   protected Type type;
   protected long timestamp;
   protected String id;
-  protected double amount;
+  protected BigDecimal amount;
 
-  public Transaction(Type type, long timestamp, String id, double amount) {
+  public Transaction(Type type, long timestamp, String id, BigDecimal amount) {
     checkNullOrBlank(id);
-    checkNegative(amount);
+    checkNegative(amount.doubleValue());
     this.type = type;
     this.timestamp = timestamp;
     this.id = id;
@@ -25,7 +26,7 @@ public class Transaction implements Comparable<Transaction> {
 
   public Transaction(Transaction source) {
     checkNullOrBlank(source.id);
-    checkNegative(source.amount);
+    checkNegative(source.amount.doubleValue());
     this.type = source.type;
     this.timestamp = source.timestamp;
     this.id = source.id;
@@ -57,12 +58,12 @@ public class Transaction implements Comparable<Transaction> {
     this.id = id;
   }
 
-  public double getAmount() {
+  public BigDecimal getAmount() {
     return this.amount;
   }
 
-  public void setAmount(double amount) {
-    checkNegative(amount);
+  public void setAmount(BigDecimal amount) {
+    checkNegative(amount.doubleValue());
     this.amount = amount;
   }
 

@@ -1,10 +1,13 @@
 package src.main.model.account;
 
+import java.math.BigDecimal;
+
 public class Savings extends Account {
 
-  public static final double WITHDRAWAL_FEE = 5.00;
+  public static final BigDecimal WITHDRAWAL_FEE = new BigDecimal(Double.valueOf(5.00));
+  public static final BigDecimal MIN_BALANCE = new BigDecimal(Double.valueOf(0));
 
-  public Savings(String id, String name, double balance) {
+  public Savings(String id, String name, BigDecimal balance) {
     super(id, name, balance);
   }
 
@@ -18,14 +21,15 @@ public class Savings extends Account {
   }
 
   @Override
-  public void deposit(double amount) {
-    this.setBalance(balance += amount);
+  public void deposit(BigDecimal amount) {
+    this.setBalance(balance.add(amount));
   }
 
   @Override
-  public void withdrawal(double amount) {
-    if ((balance - amount - WITHDRAWAL_FEE) >= 0)
-      this.setBalance(balance -= amount + WITHDRAWAL_FEE);
+  public void withdrawal(BigDecimal amount) {
+    BigDecimal netWithdrawal = amount.add(WITHDRAWAL_FEE);
+    if (this.balance.subtract(netWithdrawal).compareTo(MIN_BALANCE) >= 0)
+      this.setBalance(balance.subtract(netWithdrawal));
   }
 
 }

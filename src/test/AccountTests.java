@@ -3,6 +3,8 @@ package src.test;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,117 +18,123 @@ public class AccountTests {
 
   Account[] accounts;
 
+  private static final BigDecimal TAX_RATE = new BigDecimal(Double.valueOf(0.15));
+  private static final BigDecimal TAX_THRESHOLD = new BigDecimal(Double.valueOf(3000));
+  private static final BigDecimal OVERDRAFT_FEE = new BigDecimal(Double.valueOf(5.50));
+
   @Before
   public void setup() {
-    accounts = new Account[] { new Checking("f84c43f4-a634-4c57-a644-7602f8840870", "Michael Scott", 1524.51),
-        new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman", 2241.60),
-        new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "Phoebe Buffay", 2537.31) };
+    accounts = new Account[] {
+        new Checking("f84c43f4-a634-4c57-a644-7602f8840870", "Michael Scott", new BigDecimal(Double.valueOf(1524.51))),
+        new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman", new BigDecimal(Double.valueOf(2241.60))),
+        new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "Phoebe Buffay", new BigDecimal(Double.valueOf(2537.31)))
+    };
   }
 
   // Test if deposit works (all).
   @Test
   public void depositLessThan3000CheckingTest() {
-
-    double initialBalance = accounts[0].getBalance();
-    double amount = 187.22;
+    BigDecimal initialBalance = accounts[0].getBalance();
+    BigDecimal amount = new BigDecimal(Double.valueOf(187.22));
+    BigDecimal expectedBalance = initialBalance.add(amount);
     accounts[0].deposit(amount);
-    assertTrue((initialBalance + amount) == accounts[0].getBalance());
+    assertTrue(expectedBalance.compareTo(accounts[0].getBalance()) == 0);
   }
 
   // Test if deposit amounts in excess of $3000.00 are taxed at 15% (checking)
   @Test
   public void taxIncomeCheckingTest() {
-    double taxRate = 0.15;
-    double initialBalance = accounts[0].getBalance();
-    double amount = 10000;
-    double taxes = (10000 - 3000) * taxRate;
+    BigDecimal initialBalance = accounts[0].getBalance();
+    BigDecimal amount = new BigDecimal(Double.valueOf(10000));
+    BigDecimal taxes = amount.subtract(TAX_THRESHOLD).multiply(TAX_RATE);
     accounts[0].deposit(amount);
     ((Taxable) accounts[0]).tax(amount);
-    assertTrue((initialBalance + amount - taxes) == accounts[0].getBalance());
+    assertTrue(initialBalance.add(amount).subtract(taxes).compareTo(accounts[0].getBalance()) == 0);
   }
 
   // Test if deposit works (all).
   @Test
   public void depositSavingsTest() {
-    double initialBalance = accounts[1].getBalance();
-    double amount = 187.22;
+    BigDecimal initialBalance = accounts[1].getBalance();
+    BigDecimal amount = new BigDecimal(Double.valueOf(187.22));
+    BigDecimal expectedBalance = initialBalance.add(amount);
     accounts[1].deposit(amount);
-    assertTrue((initialBalance + amount) == accounts[1].getBalance());
+    assertTrue(expectedBalance.compareTo(accounts[1].getBalance()) == 0);
   }
 
   // Test if deposit works (all).
   @Test
   public void depositLoanTest() {
-
-    double initialBalance = accounts[2].getBalance();
-    double amount = 187.22;
+    BigDecimal amount = new BigDecimal(Double.valueOf(200));
+    BigDecimal compBalance = accounts[2].getBalance().subtract(amount);
     accounts[2].deposit(amount);
-    assertTrue((initialBalance + amount) == accounts[2].getBalance());
+    assertTrue(compBalance.compareTo(accounts[2].getBalance()) == 0);
   }
 
   // Test if withdrawal charges $5 fee (savings)
   @Test
   public void withdrawalSavingsTest() {
-    double withdrawalFee = 5.00;
-    double initialBalance = accounts[1].getBalance();
-    double amount = 187.22;
+    BigDecimal currentBalance = accounts[1].getBalance();
+    BigDecimal amount = new BigDecimal(Double.valueOf(187.22));
+    currentBalance = currentBalance.subtract(amount).subtract(Savings.WITHDRAWAL_FEE);
     accounts[1].withdrawal(amount);
-    assertTrue((initialBalance - amount - withdrawalFee) == accounts[1].getBalance());
+    assertTrue((currentBalance.compareTo(accounts[1].getBalance()) == 0));
   }
 
   // Test if withdrawal prevents negative balance (savings)
   @Test
   public void withdrawalSavingsNegativeBalanceTest() {
-    double initialBalance = accounts[1].getBalance();
+    BigDecimal initialBalance = accounts[1].getBalance();
     accounts[1].withdrawal(initialBalance);
-    assertTrue(initialBalance == accounts[1].getBalance());
+    assertTrue(initialBalance.compareTo(accounts[1].getBalance()) == 0);
   }
 
   // Test if withdrawal charges a fee of 2% (loan)
   @Test
   public void withdrawalLoanUnderMaxTest() {
-    double withdrawalRate = 0.02;
-    double initialBalance = accounts[2].getBalance();
-    double amount = 1000;
+    BigDecimal withdrawalRateMultiplier = new BigDecimal(Double.valueOf(1.02));
+    BigDecimal compBalance = accounts[2].getBalance();
+    BigDecimal amount = new BigDecimal(Double.valueOf(1000));
     accounts[2].withdrawal(amount);
-    assertTrue((initialBalance += amount * (1 + withdrawalRate)) == accounts[2].getBalance());
+    compBalance = compBalance.add(amount.multiply(withdrawalRateMultiplier));
+    assertTrue((compBalance.compareTo(accounts[2].getBalance())) == 0);
   }
 
   // Test if withdrawal prevents debit balance > $10,000. (loan)
   @Test
   public void withdrawalLoanOverMaxTest() {
-    double initialBalance = accounts[2].getBalance();
-    double amount = 10000;
+    BigDecimal initialBalance = accounts[2].getBalance();
+    BigDecimal amount = new BigDecimal(Double.valueOf(10000));
     accounts[2].withdrawal(amount);
-    assertTrue(initialBalance == accounts[2].getBalance());
+    assertTrue(initialBalance.compareTo(accounts[2].getBalance()) == 0);
   }
 
   // Test withdrawal
   @Test
   public void withdrawalCheckingTest() {
-    double initialBalance = accounts[0].getBalance();
-    double amount = 200.00;
+    BigDecimal amount = new BigDecimal(Double.valueOf(200.00));
+    BigDecimal compBalance = accounts[0].getBalance().subtract(amount);
     accounts[0].withdrawal(amount);
-    assertTrue(initialBalance - amount == accounts[0].getBalance());
+    assertTrue(compBalance.compareTo(accounts[0].getBalance()) == 0);
   }
 
   // Test if overdraft fee is applied for withdrawals that enter negative balance.
   // (checking)
   @Test
   public void withdrawalCheckingOverdraftTest() {
-    double initialBalance = accounts[0].getBalance();
-    double amount = initialBalance + 50;
+    BigDecimal amount = new BigDecimal(Double.valueOf(50.00)).add(accounts[0].getBalance());
+    BigDecimal compBalance = accounts[0].getBalance().subtract(amount).subtract(OVERDRAFT_FEE);
     accounts[0].withdrawal(amount);
-    assertTrue(initialBalance - amount - 5.50 == accounts[0].getBalance());
+    assertTrue(compBalance.compareTo(accounts[0].getBalance()) == 0);
   }
 
   // Test if overdraft is limited to $200 (checking)
   @Test
   public void withdrawalCheckingOverdraftLimitExceededTest() {
-    double initialBalance = accounts[0].getBalance();
-    double amount = initialBalance + 200;
+    BigDecimal amount = new BigDecimal(Double.valueOf(200.00)).add(accounts[0].getBalance());
+    BigDecimal compBalance = accounts[0].getBalance();
     accounts[0].withdrawal(amount);
-    assertTrue(initialBalance == accounts[0].getBalance());
+    assertTrue(compBalance.compareTo(accounts[0].getBalance()) == 0);
   }
 
   @Test

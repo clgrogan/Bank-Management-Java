@@ -1,10 +1,13 @@
 package src.main.model.account;
 
-public class Loan extends Account {
-  private static double WITHDRAWAL_RATE = 0.02;
-  private static double MAX_DEBT = 10000.00;
+import java.math.BigDecimal;
 
-  public Loan(String id, String name, double balance) {
+public class Loan extends Account {
+  private static final BigDecimal WITHDRAWAL_RATE = new BigDecimal(Double.valueOf(0.02));
+  private static final BigDecimal WITHDRAWAL_RATE_MULTIPLIER = new BigDecimal(Double.valueOf(1.02));
+  private static final BigDecimal MAX_DEBT = new BigDecimal(Double.valueOf(10000));
+
+  public Loan(String id, String name, BigDecimal balance) {
     super(id, name, balance);
   }
 
@@ -18,16 +21,25 @@ public class Loan extends Account {
   }
 
   @Override
-  public void deposit(double amount) {
-    this.setBalance(balance += amount);
+  public void deposit(BigDecimal amount) {
+
+    BigDecimal initialGetBalance = this.getBalance();
+    BigDecimal initialBalance = this.balance;
+    BigDecimal depositAmount = new BigDecimal(Double.valueOf("187.22"));
+    // System.out.println("Initial Balance: " + initialBalance);
+    System.out.println("Amount of Trans: " + amount);
+    // System.out.println("Expected Balance: " + expectedBalance);
+    System.out.println("balance pre subtract: " + this.balance);
+    // this.setBalance(this.balance.subtract(amount));
+    System.out.println("balance post subtract: " + this.balance);
+    this.setBalance(this.balance.subtract(amount));
   }
 
   @Override
-  public void withdrawal(double amount) {
-    // A withdrawal can not made if the debt exceeds $10,000.
-    // Every withdrawal is charged a fixed interest rate of 2%.
-    if ((getBalance() + (amount * (1 + WITHDRAWAL_RATE))) <= MAX_DEBT)
-      setBalance(balance += (amount * (1 + WITHDRAWAL_RATE)));
+  public void withdrawal(BigDecimal amount) {
+    BigDecimal newBalance = this.balance.add(amount.multiply(WITHDRAWAL_RATE_MULTIPLIER));
+    if (newBalance.compareTo(MAX_DEBT) <= 0)
+      setBalance(newBalance);
   }
 
 }

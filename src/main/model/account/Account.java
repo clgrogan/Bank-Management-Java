@@ -1,11 +1,13 @@
 package src.main.model.account;
 
+import java.math.BigDecimal;
+
 public abstract class Account {
   private String id;
   private String name;
-  protected double balance;
+  protected BigDecimal balance;
 
-  public Account(String id, String name, double balance) {
+  public Account(String id, String name, BigDecimal balance) {
     checkNullOrBlank(id);
     checkNullOrBlank(name);
     this.id = id;
@@ -24,9 +26,9 @@ public abstract class Account {
   }
 
   // Abstract Methods
-  public abstract void deposit(double amount);
+  public abstract void deposit(BigDecimal amount);
 
-  public abstract void withdrawal(double amount);
+  public abstract void withdrawal(BigDecimal amount);
 
   public abstract Account clone();
 
@@ -48,11 +50,11 @@ public abstract class Account {
     this.name = name;
   }
 
-  public double getBalance() {
-    return this.balance;
+  public BigDecimal getBalance() {
+    return new BigDecimal(this.balance.toString());
   }
 
-  public void setBalance(double balance) {
+  public void setBalance(BigDecimal balance) {
     this.balance = balance;
   }
 

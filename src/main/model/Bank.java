@@ -1,5 +1,6 @@
 package src.main.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -85,7 +86,7 @@ public class Bank {
    */
   public void executeTransaction(Transaction transaction) {
     Account account = this.getAccount(transaction.id);
-    double initialBalance = account.getBalance();
+    BigDecimal initialBalance = account.getBalance();
 
     if (transaction.getType().toString() == "DEPOSIT")
       account.deposit(transaction.amount);
