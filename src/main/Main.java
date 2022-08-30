@@ -1,5 +1,6 @@
 package src.main;
 
+import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 import src.main.model.Bank;
@@ -23,8 +24,10 @@ public class Main {
     private static void mainBank() {
         Bank bank = new Bank();
         Account[] accounts = new Account[] {
-                new Checking("f84c43f4-a634-4c57-a644-7602f8840870", "Michael Scott", 1524.51),
-                new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman", 2241.60)
+                new Checking("f84c43f4-a634-4c57-a644-7602f8840870", "Michael Scott",
+                        new BigDecimal(Double.valueOf(1524.51))),
+                new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman",
+                        new BigDecimal(Double.valueOf(2241.60)))
         };
 
         for (Account account : accounts) {
@@ -32,22 +35,32 @@ public class Main {
         }
         System.out.println("\n - - - Transactions Start - - -\n");
         Transaction[] transactions = new Transaction[] {
-                new Transaction(Transaction.Type.WITHDRAW, 1609459200, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 917.21),
-                new Transaction(Transaction.Type.WITHDRAW, 1546905600, "f84c43f4-a634-4c57-a644-7602f8840870", 624.99),
-                new Transaction(Transaction.Type.DEPOSIT, 1578700800, "f84c43f4-a634-4c57-a644-7602f8840870", 441.93),
-                new Transaction(Transaction.Type.WITHDRAW, 1547078400, "f84c43f4-a634-4c57-a644-7602f8840870", 546.72),
-                new Transaction(Transaction.Type.DEPOSIT, 1578355200, "f84c43f4-a634-4c57-a644-7602f8840870", 635.95),
-                new Transaction(Transaction.Type.WITHDRAW, 1547078400, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 875.64),
-                new Transaction(Transaction.Type.WITHDRAW, 1578614400, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 912.45),
-                new Transaction(Transaction.Type.WITHDRAW, 1577836800, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 695.09),
-                new Transaction(Transaction.Type.WITHDRAW, 1578096000, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 127.94),
-                new Transaction(Transaction.Type.WITHDRAW, 1546732800, "f84c43f4-a634-4c57-a644-7602f8840870", 546.72),
-                new Transaction(Transaction.Type.WITHDRAW, 1546819200, "ce07d7b3-9038-43db-83ae-77fd9c0450c9", 612.52)
+                new Transaction(Transaction.Type.WITHDRAW, 1609459200, "ce07d7b3-9038-43db-83ae-77fd9c0450c9",
+                        new BigDecimal(Double.valueOf(917.21))),
+                new Transaction(Transaction.Type.WITHDRAW, 1546905600, "f84c43f4-a634-4c57-a644-7602f8840870",
+                        new BigDecimal(Double.valueOf(624.99))),
+                new Transaction(Transaction.Type.DEPOSIT, 1578700800, "f84c43f4-a634-4c57-a644-7602f8840870",
+                        new BigDecimal(Double.valueOf(441.93))),
+                new Transaction(Transaction.Type.WITHDRAW, 1547078400, "f84c43f4-a634-4c57-a644-7602f8840870",
+                        new BigDecimal(Double.valueOf(546.72))),
+                new Transaction(Transaction.Type.DEPOSIT, 1578355200, "f84c43f4-a634-4c57-a644-7602f8840870",
+                        new BigDecimal(Double.valueOf(635.95))),
+                new Transaction(Transaction.Type.WITHDRAW, 1547078400, "ce07d7b3-9038-43db-83ae-77fd9c0450c9",
+                        new BigDecimal(Double.valueOf(875.64))),
+                new Transaction(Transaction.Type.WITHDRAW, 1578614400, "ce07d7b3-9038-43db-83ae-77fd9c0450c9",
+                        new BigDecimal(Double.valueOf(912.45))),
+                new Transaction(Transaction.Type.WITHDRAW, 1577836800, "ce07d7b3-9038-43db-83ae-77fd9c0450c9",
+                        new BigDecimal(Double.valueOf(695.09))),
+                new Transaction(Transaction.Type.WITHDRAW, 1578096000, "ce07d7b3-9038-43db-83ae-77fd9c0450c9",
+                        new BigDecimal(Double.valueOf(127.94))),
+                new Transaction(Transaction.Type.WITHDRAW, 1546732800, "f84c43f4-a634-4c57-a644-7602f8840870",
+                        new BigDecimal(Double.valueOf(546.72))),
+                new Transaction(Transaction.Type.WITHDRAW, 1546819200, "ce07d7b3-9038-43db-83ae-77fd9c0450c9",
+                        new BigDecimal(Double.valueOf(612.52))),
         };
 
         for (Transaction transaction : transactions) {
-            // bank.addTransaction(transaction);
-            System.out.println("\t!! Bank addTransaction() is private. Bank won't have transactions !!");
+            // bank.addTransaction(transaction); // privatized
         }
         System.out.println("All Bank Transactions");
         Transaction[] bankTransactions = bank.getTransactions();
@@ -73,9 +86,11 @@ public class Main {
         Checking checking = new Checking(
                 "f84c43f4-a634-4c57-a644-7602f8840870",
                 "Michael Scott",
-                1524.51);
-        Savings savings = new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman", 2241.60);
-        Loan loan = new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "Mike Myers", 2537.31);
+                new BigDecimal(Double.valueOf(1524.51)));
+        Savings savings = new Savings("ce07d7b3-9038-43db-83ae-77fd9c0450c9", "Saul Goodman",
+                new BigDecimal(Double.valueOf(2241.60)));
+        Loan loan = new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "Mike Myers",
+                new BigDecimal(Double.valueOf(2537.31)));
 
         System.out.println();
         Account checkingClone = checking.clone();

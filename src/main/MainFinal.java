@@ -2,6 +2,7 @@ package src.main;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -55,11 +56,11 @@ public class MainFinal {
 
         switch (values[0]) {
             case "Checking":
-                return new Checking(values[1], values[2], Double.parseDouble(values[3]));
+                return new Checking(values[1], values[2], new BigDecimal(values[3]));
             case "Savings":
-                return new Savings(values[1], values[2], Double.parseDouble(values[3]));
+                return new Savings(values[1], values[2], new BigDecimal(values[3]));
             case "Loan":
-                return new Loan(values[1], values[2], Double.parseDouble(values[3]));
+                return new Loan(values[1], values[2], new BigDecimal(values[3]));
             default:
                 return null;
         }
@@ -111,7 +112,7 @@ public class MainFinal {
 
     public static Transaction createTransaction(String[] values) {
         return new Transaction(Transaction.Type.valueOf(values[1]), Long.parseLong(values[0]), values[2],
-                Double.parseDouble(values[3]));
+                new BigDecimal(values[3]));
     }
 
     /**

@@ -93,7 +93,7 @@ public class Bank {
     else
       account.withdrawal(transaction.amount);
 
-    if (initialBalance != account.getBalance())
+    if (initialBalance.compareTo(account.getBalance()) != 0)
       this.addTransaction(transaction);
   }
 
