@@ -2,7 +2,6 @@ package src.main.model.account;
 
 import java.math.BigDecimal;
 import src.main.model.account.interfaces.Taxable;
-import src.main.utils.Constants;
 
 public class Checking extends Account implements Taxable {
 
@@ -29,7 +28,7 @@ public class Checking extends Account implements Taxable {
   public void withdrawal(BigDecimal amount) {
     if (this.balance.compareTo(amount) < 0)
       amount = amount.add(Constants.OVERDRAFT_FEE);
-    if (this.balance.subtract(amount).compareTo(Constants.MINIMUM_BALANCE) >= 0)
+    if (this.balance.subtract(amount).compareTo(Constants.MIN_BALANCE_CHECKING) >= 0)
       this.setBalance(this.balance.subtract(amount));
 
   }

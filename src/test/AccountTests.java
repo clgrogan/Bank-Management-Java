@@ -12,10 +12,10 @@ import org.junit.Test;
 
 import src.main.model.account.Account;
 import src.main.model.account.Checking;
+import src.main.model.account.Constants;
 import src.main.model.account.Loan;
 import src.main.model.account.Savings;
 import src.main.model.account.interfaces.Taxable;
-import src.main.utils.Constants;
 
 public class AccountTests {
 
@@ -130,7 +130,7 @@ public class AccountTests {
   // Test if overdraft is limited to $200 (checking)
   @Test
   public void withdrawalCheckingOverdraftLimitExceededTest() {
-    BigDecimal amount = Constants.MINIMUM_BALANCE.abs().add(accounts[0].getBalance());
+    BigDecimal amount = Constants.MIN_BALANCE_CHECKING.abs().add(accounts[0].getBalance());
     BigDecimal compBalance = accounts[0].getBalance();
     accounts[0].withdrawal(amount);
     assertTrue(compBalance.compareTo(accounts[0].getBalance()) == 0);

@@ -2,8 +2,6 @@ package src.main.model.account;
 
 import java.math.BigDecimal;
 
-import src.main.utils.Constants;
-
 public class Savings extends Account {
 
   public Savings(String id, String name, BigDecimal balance) {
