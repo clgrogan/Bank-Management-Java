@@ -17,7 +17,7 @@ public class Transaction implements Comparable<Transaction> {
 
   public Transaction(Type type, long timestamp, String id, BigDecimal amount) {
     checkNullOrBlank(id);
-    checkNegative(amount);
+    checkNullOrNegative(amount);
     this.type = type;
     this.timestamp = timestamp;
     this.id = id;
@@ -26,7 +26,7 @@ public class Transaction implements Comparable<Transaction> {
 
   public Transaction(Transaction source) {
     checkNullOrBlank(source.id);
-    checkNegative(source.amount);
+    checkNullOrNegative(source.amount);
     this.type = source.type;
     this.timestamp = source.timestamp;
     this.id = source.id;
@@ -63,7 +63,7 @@ public class Transaction implements Comparable<Transaction> {
   }
 
   public void setAmount(BigDecimal amount) {
-    checkNegative(amount);
+    checkNullOrNegative(amount);
     this.amount = amount;
   }
 
@@ -82,7 +82,9 @@ public class Transaction implements Comparable<Transaction> {
     }
   }
 
-  public void checkNegative(BigDecimal amount) {
+  public void checkNullOrNegative(BigDecimal amount) {
+    if (amount == null)
+      throw new IllegalArgumentException("The 'amount' argument can't be null.");
     if (amount.signum() == -1)
       throw new IllegalArgumentException("The 'amount' argument can't be negative.");
   }

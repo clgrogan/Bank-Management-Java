@@ -1,6 +1,7 @@
 package src.main.model.account;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public abstract class Account {
   private String id;
@@ -10,9 +11,15 @@ public abstract class Account {
   public Account(String id, String name, BigDecimal balance) {
     checkNullOrBlank(id);
     checkNullOrBlank(name);
+    checkNull(balance);
     this.id = id;
     this.name = name;
     this.balance = balance;
+  }
+
+  private void checkNull(BigDecimal balance) {
+    if (balance == null)
+      throw new IllegalArgumentException("Argument may not be null.");
   }
 
   public Account(Account source) {
@@ -43,6 +50,23 @@ public abstract class Account {
 
   public String getName() {
     return this.name;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this)
+      return true;
+    if (!(o instanceof Account)) {
+      return false;
+    }
+    Account account = (Account) o;
+    return Objects.equals(id, account.id) && Objects.equals(name, account.name)
+        && Objects.equals(balance, account.balance);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, name, balance);
   }
 
   public void setName(String name) {

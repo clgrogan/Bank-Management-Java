@@ -1,6 +1,8 @@
 package src.test;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -12,15 +14,12 @@ import src.main.model.account.Account;
 import src.main.model.account.Checking;
 import src.main.model.account.Loan;
 import src.main.model.account.Savings;
-import src.main.model.account.interfaces.Taxable;;;
+import src.main.model.account.interfaces.Taxable;
+import src.main.utils.Constants;
 
 public class AccountTests {
 
   Account[] accounts;
-
-  private static final BigDecimal TAX_RATE = new BigDecimal(Double.valueOf(0.15));
-  private static final BigDecimal TAX_THRESHOLD = new BigDecimal(Double.valueOf(3000));
-  private static final BigDecimal OVERDRAFT_FEE = new BigDecimal(Double.valueOf(5.50));
 
   @Before
   public void setup() {
@@ -46,7 +45,7 @@ public class AccountTests {
   public void taxIncomeCheckingTest() {
     BigDecimal initialBalance = accounts[0].getBalance();
     BigDecimal amount = new BigDecimal(Double.valueOf(10000));
-    BigDecimal taxes = amount.subtract(TAX_THRESHOLD).multiply(TAX_RATE);
+    BigDecimal taxes = amount.subtract(Constants.TAX_THRESHOLD).multiply(Constants.TAX_RATE);
     accounts[0].deposit(amount);
     ((Taxable) accounts[0]).tax(amount);
     assertTrue(initialBalance.add(amount).subtract(taxes).compareTo(accounts[0].getBalance()) == 0);
@@ -76,7 +75,7 @@ public class AccountTests {
   public void withdrawalSavingsTest() {
     BigDecimal currentBalance = accounts[1].getBalance();
     BigDecimal amount = new BigDecimal(Double.valueOf(187.22));
-    currentBalance = currentBalance.subtract(amount).subtract(Savings.WITHDRAWAL_FEE);
+    currentBalance = currentBalance.subtract(amount).subtract(Constants.WITHDRAWAL_FEE);
     accounts[1].withdrawal(amount);
     assertTrue((currentBalance.compareTo(accounts[1].getBalance()) == 0));
   }
@@ -123,7 +122,7 @@ public class AccountTests {
   @Test
   public void withdrawalCheckingOverdraftTest() {
     BigDecimal amount = new BigDecimal(Double.valueOf(50.00)).add(accounts[0].getBalance());
-    BigDecimal compBalance = accounts[0].getBalance().subtract(amount).subtract(OVERDRAFT_FEE);
+    BigDecimal compBalance = accounts[0].getBalance().subtract(amount).subtract(Constants.OVERDRAFT_FEE);
     accounts[0].withdrawal(amount);
     assertTrue(compBalance.compareTo(accounts[0].getBalance()) == 0);
   }
@@ -131,7 +130,7 @@ public class AccountTests {
   // Test if overdraft is limited to $200 (checking)
   @Test
   public void withdrawalCheckingOverdraftLimitExceededTest() {
-    BigDecimal amount = new BigDecimal(Double.valueOf(200.00)).add(accounts[0].getBalance());
+    BigDecimal amount = Constants.MINIMUM_BALANCE.abs().add(accounts[0].getBalance());
     BigDecimal compBalance = accounts[0].getBalance();
     accounts[0].withdrawal(amount);
     assertTrue(compBalance.compareTo(accounts[0].getBalance()) == 0);
@@ -141,7 +140,35 @@ public class AccountTests {
   public void cloneAccountTest() {
 
     Account clonedAccount = accounts[0].clone();
-    assertNotEquals(accounts[0], clonedAccount);
+    assertEquals(accounts[0], clonedAccount);
+    assertFalse(accounts[0] == clonedAccount);
+  }
+
+  @Test
+  public void testNullOrEmptyExceptionTest() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      Loan loan = new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "Phoebe Buffay", null);
+    });
+
+    assertThrows(IllegalArgumentException.class, () -> {
+      Loan loan = new Loan(null, "Phoebe Buffay",
+          new BigDecimal(Double.valueOf(666.66)));
+    });
+
+    assertThrows(IllegalArgumentException.class, () -> {
+      Loan loan = new Loan("", "Phoebe Buffay",
+          new BigDecimal(Double.valueOf(666.66)));
+    });
+
+    assertThrows(IllegalArgumentException.class, () -> {
+      Loan loan = new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", null,
+          new BigDecimal(Double.valueOf(666.66)));
+    });
+
+    assertThrows(IllegalArgumentException.class, () -> {
+      Loan loan = new Loan("4991bf71-ae8f-4df9-81c1-9c79cff280a5", "",
+          new BigDecimal(Double.valueOf(666.66)));
+    });
   }
 
 }
