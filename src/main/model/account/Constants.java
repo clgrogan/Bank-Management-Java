@@ -2,7 +2,7 @@ package src.main.model.account;
 
 import java.math.BigDecimal;
 
-public abstract class Constants {
+public abstract interface Constants {
 
   public static final BigDecimal TAX_RATE = new BigDecimal(Double.valueOf(0.15));
   public static final BigDecimal TAX_THRESHOLD = new BigDecimal(Double.valueOf(3000));

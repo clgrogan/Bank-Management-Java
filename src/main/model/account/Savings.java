@@ -2,7 +2,7 @@ package src.main.model.account;
 
 import java.math.BigDecimal;
 
-public class Savings extends Account {
+public class Savings extends Account implements Constants {
 
   public Savings(String id, String name, BigDecimal balance) {
     super(id, name, balance);
@@ -25,7 +25,7 @@ public class Savings extends Account {
   @Override
   public void withdrawal(BigDecimal amount) {
     BigDecimal netWithdrawal = amount.add(Constants.WITHDRAWAL_FEE);
-    if (this.balance.subtract(netWithdrawal).compareTo(Constants.MIN_BALANCE) >= 0)
+    if (this.balance.subtract(netWithdrawal).compareTo(MIN_BALANCE_SAVINGS) >= 0)
       this.setBalance(balance.subtract(netWithdrawal));
   }
 
